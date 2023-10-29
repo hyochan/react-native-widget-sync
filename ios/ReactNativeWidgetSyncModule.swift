@@ -16,7 +16,7 @@ public class ReactNativeWidgetSyncModule: Module {
         // Can be inferred from module's class name, but it's recommended to set it explicitly for clarity.
         // The module will be accessible from `requireNativeModule('RefreshWidget')` in JavaScript.
         Name("ReactNativeWidgetSync")
-        
+
         Function("reloadAll") { () -> Void in
             if #available(iOS 14, *) {
                 WidgetCenter.shared.reloadAllTimelines()
@@ -24,19 +24,19 @@ public class ReactNativeWidgetSyncModule: Module {
                 throw VersionException()
             }
         }
-        
+
         Function("setItem") { (value: String, key: String, appGroup: String) -> Void in
             if let userDefaults = UserDefaults(suiteName: appGroup){
                 userDefaults.set(value, forKey: key )
             }
         }
-        
+
         Function("getItem") { ( key: String, appGroup: String) -> String? in
             if let userDefaults = UserDefaults(suiteName: appGroup){
                 return userDefaults.string(forKey: key)
             }
             return nil
         }
-        
+
     }
 }

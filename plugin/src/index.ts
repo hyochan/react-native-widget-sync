@@ -1,7 +1,7 @@
-import { ConfigPlugin, withPlugins } from "@expo/config-plugins";
+import {ConfigPlugin, withPlugins} from '@expo/config-plugins';
 
-import { withWidgetAndroid } from "./android/withWidgetAndroid";
-import { withWidgetIos } from "./ios/withWidgetIos";
+import {withWidgetAndroid} from './android/withWidgetAndroid';
+import {withWidgetIos} from './ios/withWidgetIos';
 
 export interface Props {
   widgetName: string;

@@ -1,11 +1,7 @@
-import {
-  ConfigPlugin,
-  InfoPlist,
-  withXcodeProject,
-} from "@expo/config-plugins";
-import plist from "@expo/plist";
-import * as fs from "fs";
-import * as path from "path";
+import {ConfigPlugin, InfoPlist, withXcodeProject} from '@expo/config-plugins';
+import plist from '@expo/plist';
+import * as fs from 'fs';
+import * as path from 'path';
 
 interface Props {
   appGroupIdentifier: string;
@@ -14,18 +10,18 @@ interface Props {
 
 export const withWidgetEntitlements: ConfigPlugin<Props> = (
   config,
-  { appGroupIdentifier, targetName }
+  {appGroupIdentifier, targetName},
 ) => {
   return withXcodeProject(config, async (config) => {
     const entitlementsFilename = `${targetName}.entitlements`;
     const extensionRootPath = path.join(
       config.modRequest.platformProjectRoot,
-      targetName
+      targetName,
     );
     const entitlementsPath = path.join(extensionRootPath, entitlementsFilename);
 
     const extensionEntitlements: InfoPlist = {
-      "com.apple.security.application-groups": [appGroupIdentifier],
+      'com.apple.security.application-groups': [appGroupIdentifier],
     };
 
     // create file
@@ -34,25 +30,25 @@ export const withWidgetEntitlements: ConfigPlugin<Props> = (
     });
     await fs.promises.writeFile(
       entitlementsPath,
-      plist.build(extensionEntitlements)
+      plist.build(extensionEntitlements),
     );
 
     // add file to extension group
     const proj = config.modResults;
     const targetUuid = proj.findTargetKey(targetName);
-    const groupUuid = proj.findPBXGroupKey({ name: targetName });
+    const groupUuid = proj.findPBXGroupKey({name: targetName});
 
     proj.addFile(entitlementsFilename, groupUuid, {
       target: targetUuid,
-      lastKnownFileType: "text.plist.entitlements",
+      lastKnownFileType: 'text.plist.entitlements',
     });
 
     // update build properties
     proj.updateBuildProperty(
-      "CODE_SIGN_ENTITLEMENTS",
+      'CODE_SIGN_ENTITLEMENTS',
       `${targetName}/${entitlementsFilename}`,
       null,
-      targetName
+      targetName,
     );
 
     return config;

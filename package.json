@@ -1,10 +1,12 @@
 {
   "name": "react-native-widget-sync",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "The module allows refreshing and sharing of data between the main application and the widget.",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
+    "tsc": "tsc",
+    "postinstall": "tsc",
     "clean": "expo-module clean plugin",
     "lint": "expo-module lint",
     "test": "expo-module test",
@@ -12,8 +14,8 @@
     "expo-module": "expo-module",
     "open:ios": "open -a \"Xcode\" example/ios",
     "open:android": "open -a \"Android Studio\" example/android",
-    "build:plugin": "yarn clean && EXPO_NONINTERACTIVE=1 expo-module build plugin && ./plugin/src/scripts/copy.sh",
-    "prepare": "yarn build:plugin"
+    "build:plugin": "bun run clean && EXPO_NONINTERACTIVE=1 expo-module build plugin && ./plugin/src/scripts/copy.sh",
+    "prepare": "bun build:plugin"
   },
   "keywords": [
     "react-native",
@@ -26,7 +28,7 @@
   "bugs": {
     "url": "https://github.com/pafry7/react-native-widget-sync/issues"
   },
-  "author": "Patryk Fryda <patryk@alergeek.ventures> ()",
+  "author": "hyochan <hyochan.dev@gmail.com>",
   "license": "MIT",
   "homepage": "https://github.com/pafry7/react-native-widget-sync#readme",
   "devDependencies": {

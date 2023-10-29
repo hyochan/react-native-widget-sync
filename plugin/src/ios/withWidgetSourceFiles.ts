@@ -1,6 +1,6 @@
-import { ConfigPlugin, withXcodeProject } from "@expo/config-plugins";
-import * as fs from "fs";
-import * as path from "path";
+import {ConfigPlugin, withXcodeProject} from '@expo/config-plugins';
+import * as fs from 'fs';
+import * as path from 'path';
 
 interface Props {
   targetName: string;
@@ -9,54 +9,54 @@ interface Props {
 
 export const withWidgetSourceFiles: ConfigPlugin<Props> = (
   config,
-  { targetName, appGroupIdentifier }
+  {targetName, appGroupIdentifier},
 ) => {
   return withXcodeProject(config, async (config) => {
     const extensionRootPath = path.join(
       config.modRequest.platformProjectRoot,
-      targetName
+      targetName,
     );
     const projectPath = config.modRequest.projectRoot;
-    const widgetSourceDirPath = path.join(projectPath, targetName, "ios");
+    const widgetSourceDirPath = path.join(projectPath, targetName, 'ios');
     if (!fs.existsSync(widgetSourceDirPath)) {
-      await fs.promises.mkdir(widgetSourceDirPath, { recursive: true });
-      const widgetStaticSourceDirPath = path.join(__dirname, "static");
+      await fs.promises.mkdir(widgetSourceDirPath, {recursive: true});
+      const widgetStaticSourceDirPath = path.join(__dirname, 'static');
       await fs.promises.copyFile(
-        path.join(widgetStaticSourceDirPath, "widget.swift"),
-        path.join(widgetSourceDirPath, "widget.swift")
+        path.join(widgetStaticSourceDirPath, 'widget.swift'),
+        path.join(widgetSourceDirPath, 'widget.swift'),
       );
       await fs.promises.cp(
-        path.join(widgetStaticSourceDirPath, "Assets.xcassets"),
-        path.join(widgetSourceDirPath, "Assets.xcassets"),
-        { recursive: true }
+        path.join(widgetStaticSourceDirPath, 'Assets.xcassets'),
+        path.join(widgetSourceDirPath, 'Assets.xcassets'),
+        {recursive: true},
       );
 
       const widgetSourceFilePath = path.join(
         widgetSourceDirPath,
-        "widget.swift" // use to targetName
+        'widget.swift', // use to targetName
       );
-      const content = fs.readFileSync(widgetSourceFilePath, "utf8");
+      const content = fs.readFileSync(widgetSourceFilePath, 'utf8');
       const newContent = content.replace(
         /group.com.example.widget/,
-        `${appGroupIdentifier}`
+        `${appGroupIdentifier}`,
       );
 
       fs.writeFileSync(widgetSourceFilePath, newContent);
     }
-    await fs.promises.mkdir(extensionRootPath, { recursive: true });
+    await fs.promises.mkdir(extensionRootPath, {recursive: true});
     await fs.promises.copyFile(
-      path.join(widgetSourceDirPath, "widget.swift"),
-      path.join(extensionRootPath, "widget.swift")
+      path.join(widgetSourceDirPath, 'widget.swift'),
+      path.join(extensionRootPath, 'widget.swift'),
     );
     await fs.promises.cp(
-      path.join(widgetSourceDirPath, "Assets.xcassets"),
-      path.join(extensionRootPath, "Assets.xcassets"),
-      { recursive: true }
+      path.join(widgetSourceDirPath, 'Assets.xcassets'),
+      path.join(extensionRootPath, 'Assets.xcassets'),
+      {recursive: true},
     );
 
     const proj = config.modResults;
     const targetUuid = proj.findTargetKey(targetName);
-    const groupUuid = proj.findPBXGroupKey({ name: targetName });
+    const groupUuid = proj.findPBXGroupKey({name: targetName});
 
     if (!targetUuid) {
       return Promise.reject(null);
@@ -66,11 +66,11 @@ export const withWidgetSourceFiles: ConfigPlugin<Props> = (
     }
 
     proj.addSourceFile(
-      "widget.swift",
+      'widget.swift',
       {
         target: targetUuid,
       },
-      groupUuid
+      groupUuid,
     );
 
     return config;

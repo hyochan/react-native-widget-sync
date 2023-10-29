@@ -1,4 +1,4 @@
-import { ConfigPlugin, withAppBuildGradle } from "@expo/config-plugins";
+import {ConfigPlugin, withAppBuildGradle} from '@expo/config-plugins';
 
 /**
  * Add "apply plugin: kotlin-android" to app build.gradle
@@ -15,7 +15,7 @@ export const withWidgetAppBuildGradle: ConfigPlugin = (config) => {
     newBuildGradle = newBuildGradle.replace(
       /dependencies\s?{/,
       `dependencies {
-    implementation 'com.google.code.gson:gson:2.10.1'`
+    implementation 'com.google.code.gson:gson:2.10.1'`,
     );
 
     newConfig.modResults.contents = newBuildGradle;

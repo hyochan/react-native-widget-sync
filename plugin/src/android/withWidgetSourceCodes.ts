@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { ConfigPlugin, withDangerousMod } from "@expo/config-plugins";
-import fs from "fs";
-import path from "path";
+import {ConfigPlugin, withDangerousMod} from '@expo/config-plugins';
+import fs from 'fs';
+import path from 'path';
 
 export const withWidgetSourceCodes: ConfigPlugin<{
   widgetName: string;
   appGroupName: string;
-}> = (config, { widgetName, appGroupName }) => {
+}> = (config, {widgetName, appGroupName}) => {
   return withDangerousMod(config, [
-    "android",
+    'android',
     async (newConfig) => {
       const projectRoot = newConfig.modRequest.projectRoot;
       const platformRoot = newConfig.modRequest.platformProjectRoot;
@@ -21,7 +21,7 @@ export const withWidgetSourceCodes: ConfigPlugin<{
         platformRoot,
         packageName!,
         widgetName,
-        appGroupName
+        appGroupName,
       );
 
       return newConfig;
@@ -31,17 +31,17 @@ export const withWidgetSourceCodes: ConfigPlugin<{
 
 async function copyResourceFiles(
   widgetSourceDir: string,
-  platformRoot: string
+  platformRoot: string,
 ) {
-  const source = path.join(widgetSourceDir, "android", "src", "main", "res");
-  const resDest = path.join(platformRoot, "app", "src", "main", "res");
+  const source = path.join(widgetSourceDir, 'android', 'src', 'main', 'res');
+  const resDest = path.join(platformRoot, 'app', 'src', 'main', 'res');
 
   if (!fs.existsSync(widgetSourceDir)) {
-    const templateFolder = path.join(__dirname, "static", "res");
-    console.log({ templateFolder, source });
-    await fs.promises.cp(templateFolder, source, { recursive: true });
+    const templateFolder = path.join(__dirname, 'static', 'res');
+    console.log({templateFolder, source});
+    await fs.promises.cp(templateFolder, source, {recursive: true});
   }
-  await fs.promises.cp(source, resDest, { recursive: true });
+  await fs.promises.cp(source, resDest, {recursive: true});
 }
 
 async function prepareSourceCodes(
@@ -49,40 +49,40 @@ async function prepareSourceCodes(
   platformRoot: string,
   packageName: string,
   widgetClassName: string,
-  appGroupName: string
+  appGroupName: string,
 ) {
-  const packageDirPath = packageName.replace(/\./g, "/");
+  const packageDirPath = packageName.replace(/\./g, '/');
   const source = path.join(
     widgetSourceDir,
-    `android/src/main/java/package_name`
+    `android/src/main/java/package_name`,
   );
   const widgetSourceFilePath = path.join(source, `${widgetClassName}.kt`);
   if (!fs.existsSync(source)) {
-    const templateFolder = path.join(__dirname, "static", "java/package_name");
-    await fs.promises.cp(templateFolder, source, { recursive: true });
+    const templateFolder = path.join(__dirname, 'static', 'java/package_name');
+    await fs.promises.cp(templateFolder, source, {recursive: true});
     await fs.promises.rename(
-      path.join(source, "SampleWidget.kt"),
-      widgetSourceFilePath
+      path.join(source, 'SampleWidget.kt'),
+      widgetSourceFilePath,
     );
-    const content = fs.readFileSync(widgetSourceFilePath, "utf8");
+    const content = fs.readFileSync(widgetSourceFilePath, 'utf8');
     let newContent = content.replace(/SampleWidget/, `${widgetClassName}`);
     newContent = newContent.replace(
       /group.com.example.widget/,
-      `${appGroupName}`
+      `${appGroupName}`,
     );
 
     fs.writeFileSync(widgetSourceFilePath, newContent);
   }
 
-  const dest = path.join(platformRoot, "app/src/main/java", packageDirPath);
+  const dest = path.join(platformRoot, 'app/src/main/java', packageDirPath);
   const widgetDestFilePath = path.join(dest, `${widgetClassName}.kt`);
 
-  await fs.promises.cp(source, dest, { recursive: true });
+  await fs.promises.cp(source, dest, {recursive: true});
 
-  const content = fs.readFileSync(widgetDestFilePath, "utf8");
+  const content = fs.readFileSync(widgetDestFilePath, 'utf8');
   const newContent = content.replace(
     /^package .*\s/,
-    `package ${packageName}\n`
+    `package ${packageName}\n`,
   );
   fs.writeFileSync(widgetDestFilePath, newContent);
 }

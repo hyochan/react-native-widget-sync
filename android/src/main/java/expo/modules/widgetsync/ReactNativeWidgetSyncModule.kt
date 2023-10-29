@@ -48,6 +48,7 @@ class ReactNativeWidgetSyncModule : Module() {
         }
 
         Function("getItem") { key: String, appGroup: String ->
+
             return@Function getPreferences(appGroup).getString(key, "")
         }
     }
